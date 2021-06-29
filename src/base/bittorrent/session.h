@@ -508,6 +508,21 @@ namespace BitTorrent
 
         void findIncompleteFiles(const TorrentInfo &torrentInfo, const QString &savePath) const;
 
+        // Auto ban Unknown Peer
+        bool isAutoBanUnknownPeerEnabled() const;
+        void setAutoBanUnknownPeer(bool value);
+
+        // Auto ban Bittorrent Media Player Peer
+        bool isAutoBanBTPlayerPeerEnabled() const;
+        void setAutoBanBTPlayerPeer(bool value);
+
+        // Trackers list
+        bool isAutoUpdateTrackersEnabled() const;
+        void setAutoUpdateTrackersEnabled(bool enabled);
+        QString publicTrackers() const;
+        void setPublicTrackers(const QString &trackers);
+        void updatePublicTracker();
+
     signals:
         void allTorrentsFinished();
         void categoryAdded(const QString &categoryName);
@@ -562,6 +577,9 @@ namespace BitTorrent
         void networkOnlineStateChanged(bool online);
         void networkConfigurationChange(const QNetworkConfiguration &);
 #endif
+
+        // Public Tracker handle slots
+        void handlePublicTrackerTxtDownloadFinished(const Net::DownloadResult &result);
 
     private:
         struct MoveStorageJob
@@ -643,6 +661,8 @@ namespace BitTorrent
         void saveResumeData();
         void saveTorrentsQueue() const;
         void removeTorrentsQueue() const;
+
+        void populatePublicTrackers();
 
         std::vector<lt::alert *> getPendingAlerts(lt::time_duration time = lt::time_duration::zero()) const;
 
@@ -756,6 +776,12 @@ namespace BitTorrent
 #if defined(Q_OS_WIN)
         CachedSettingValue<OSMemoryPriority> m_OSMemoryPriority;
 #endif
+        // Enhanced Function
+        CachedSettingValue<QString> m_publicTrackers;
+        CachedSettingValue<bool> m_autoBanUnknownPeer;
+        CachedSettingValue<bool> m_autoBanBTPlayerPeer;
+        CachedSettingValue<bool> m_isAutoUpdateTrackersEnabled;
+        QTimer *m_updateTimer;
 
         // Order is important. This needs to be declared after its CachedSettingsValue
         // counterpart, because it uses it for initialization in the constructor
@@ -765,6 +791,7 @@ namespace BitTorrent
         int m_numResumeData = 0;
         int m_extraLimit = 0;
         QVector<TrackerEntry> m_additionalTrackerList;
+        QVector<TrackerEntry> m_publicTrackerList;
 
         bool m_refreshEnqueued = false;
         QTimer *m_seedingLimitTimer = nullptr;
