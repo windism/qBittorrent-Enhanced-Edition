@@ -60,7 +60,7 @@ namespace Ui
 class OptionsDialog final : public QDialog
 {
     Q_OBJECT
-    Q_DISABLE_COPY(OptionsDialog)
+    Q_DISABLE_COPY_MOVE(OptionsDialog)
 
     using ThisType = OptionsDialog;
 
@@ -184,6 +184,7 @@ private:
     Ui::OptionsDialog *m_ui;
     SettingValue<QSize> m_storeDialogSize;
     SettingValue<QStringList> m_storeHSplitterSize;
+    SettingValue<int> m_storeLastViewedPage;
 
     QPushButton *m_applyButton;
 
