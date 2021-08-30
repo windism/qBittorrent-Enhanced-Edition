@@ -43,9 +43,8 @@
 #include <libtorrent/session.hpp>
 #include <libtorrent/storage_defs.hpp>
 #include <libtorrent/time.hpp>
-#include <libtorrent/version.hpp>
 
-#if (LIBTORRENT_VERSION_NUM >= 20000)
+#ifdef QBT_USES_LIBTORRENT2
 #include <libtorrent/info_hash.hpp>
 #endif
 
@@ -96,7 +95,7 @@ namespace
         return entry;
     }
 
-#if (LIBTORRENT_VERSION_NUM >= 20000)
+#ifdef QBT_USES_LIBTORRENT2
     TrackerEntry fromNativeAnnouncerEntry(const lt::announce_entry &nativeEntry
         , const lt::info_hash_t &hashes, const QMap<lt::tcp::endpoint, int> &trackerPeerCounts)
 #else
@@ -111,7 +110,7 @@ namespace
         int numNotWorking = 0;
         QString firstTrackerMessage;
         QString firstErrorMessage;
-#if (LIBTORRENT_VERSION_NUM >= 20000)
+#ifdef QBT_USES_LIBTORRENT2
         const auto numEndpoints = static_cast<qsizetype>(nativeEntry.endpoints.size() * ((hashes.has_v1() && hashes.has_v2()) ? 2 : 1));
         trackerEntry.endpoints.reserve(static_cast<decltype(trackerEntry.endpoints)::size_type>(numEndpoints));
         for (const lt::announce_endpoint &endpoint : nativeEntry.endpoints)
@@ -265,7 +264,7 @@ TorrentImpl::TorrentImpl(Session *session, lt::session *nativeSession
     , m_session(session)
     , m_nativeSession(nativeSession)
     , m_nativeHandle(nativeHandle)
-#if (LIBTORRENT_VERSION_NUM >= 20000)
+#ifdef QBT_USES_LIBTORRENT2
     , m_infoHash(m_nativeHandle.info_hashes())
 #else
     , m_infoHash(m_nativeHandle.info_hash())
@@ -478,7 +477,7 @@ QVector<TrackerEntry> TorrentImpl::trackers() const
     for (const lt::announce_entry &tracker : nativeTrackers)
     {
         const QString trackerURL = QString::fromStdString(tracker.url);
-#if (LIBTORRENT_VERSION_NUM >= 20000)
+#ifdef QBT_USES_LIBTORRENT2
         entries << fromNativeAnnouncerEntry(tracker, m_nativeHandle.info_hashes(), m_trackerPeerCounts[trackerURL]);
 #else
         entries << fromNativeAnnouncerEntry(tracker, m_trackerPeerCounts[trackerURL]);
@@ -1631,8 +1630,10 @@ void TorrentImpl::moveStorage(const QString &newPath, const MoveStorageMode mode
 
 void TorrentImpl::renameFile(const int index, const QString &path)
 {
+#ifndef QBT_USES_LIBTORRENT2
     const QString oldPath = filePath(index);
     m_oldPath[lt::file_index_t {index}].push_back(oldPath);
+#endif
     ++m_renameCount;
     m_nativeHandle.rename_file(lt::file_index_t {index}, Utils::Fs::toNativePath(path).toStdString());
 }
@@ -1868,11 +1869,14 @@ void TorrentImpl::handleFileRenamedAlert(const lt::file_renamed_alert *p)
     // Remove empty leftover folders
     // For example renaming "a/b/c" to "d/b/c", then folders "a/b" and "a" will
     // be removed if they are empty
+#ifndef QBT_USES_LIBTORRENT2
     const QString oldFilePath = m_oldPath[p->index].takeFirst();
-    const QString newFilePath = Utils::Fs::toUniformPath(p->new_name());
-
     if (m_oldPath[p->index].isEmpty())
         m_oldPath.remove(p->index);
+#else
+    const QString oldFilePath = Utils::Fs::toUniformPath(p->old_name());
+#endif
+    const QString newFilePath = Utils::Fs::toUniformPath(p->new_name());
 
     QList<QStringView> oldPathParts = QStringView(oldFilePath).split('/', Qt::SkipEmptyParts);
     oldPathParts.removeLast();  // drop file name part
@@ -1912,9 +1916,11 @@ void TorrentImpl::handleFileRenameFailedAlert(const lt::file_rename_failed_alert
         .arg(name(), filePath(toLTUnderlyingType(p->index))
              , QString::fromLocal8Bit(p->error.message().c_str())), Log::WARNING);
 
+#ifndef QBT_USES_LIBTORRENT2
     m_oldPath[p->index].removeFirst();
     if (m_oldPath[p->index].isEmpty())
         m_oldPath.remove(p->index);
+#endif
 
     --m_renameCount;
     while (!isMoveInProgress() && (m_renameCount == 0) && !m_moveFinishedTriggers.isEmpty())
@@ -1944,7 +1950,7 @@ void TorrentImpl::handleFileErrorAlert(const lt::file_error_alert *p)
     m_lastFileError = {p->error, p->op};
 }
 
-#if (LIBTORRENT_VERSION_NUM >= 20003)
+#ifdef QBT_USES_LIBTORRENT2
 void TorrentImpl::handleFilePrioAlert(const lt::file_prio_alert *)
 {
     if (m_nativeHandle.need_save_resume_data())
@@ -1989,7 +1995,7 @@ void TorrentImpl::handleAlert(const lt::alert *a)
 {
     switch (a->type())
     {
-#if (LIBTORRENT_VERSION_NUM >= 20003)
+#ifdef QBT_USES_LIBTORRENT2
     case lt::file_prio_alert::alert_type:
         handleFilePrioAlert(static_cast<const lt::file_prio_alert*>(a));
         break;

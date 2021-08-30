@@ -252,7 +252,7 @@ namespace BitTorrent
         void handleFastResumeRejectedAlert(const lt::fastresume_rejected_alert *p);
         void handleFileCompletedAlert(const lt::file_completed_alert *p);
         void handleFileErrorAlert(const lt::file_error_alert *p);
-#if (LIBTORRENT_VERSION_NUM >= 20003)
+#ifdef QBT_USES_LIBTORRENT2
         void handleFilePrioAlert(const lt::file_prio_alert *p);
 #endif
         void handleFileRenamedAlert(const lt::file_renamed_alert *p);
@@ -302,9 +302,11 @@ namespace BitTorrent
 
         MaintenanceJob m_maintenanceJob = MaintenanceJob::None;
 
-        // Until libtorrent provide an "old_name" field in `file_renamed_alert`
-        // we will rely on this workaround to remove empty leftover folders
+#ifndef QBT_USES_LIBTORRENT2
+        // Until libtorrent provided an "old_name" field in `file_renamed_alert`
+        // we relied on this workaround to remove empty leftover folders
         QHash<lt::file_index_t, QVector<QString>> m_oldPath;
+#endif
 
         QHash<QString, QMap<lt::tcp::endpoint, int>> m_trackerPeerCounts;
         FileErrorInfo m_lastFileError;
