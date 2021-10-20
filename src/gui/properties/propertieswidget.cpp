@@ -412,7 +412,7 @@ void PropertiesWidget::saveSettings()
         sizes = hSplitter->sizes();
     else
         sizes = m_slideSizes;
-    qDebug("Sizes: %d", sizes.size());
+
     if (sizes.size() == 2)
         pref->setPropSplitterSizes(QString::number(sizes.first()) + ',' + QString::number(sizes.last()));
     pref->setPropFileListState(m_ui->filesList->header()->saveState());
@@ -551,6 +551,9 @@ void PropertiesWidget::loadDynamicData()
 
 void PropertiesWidget::loadUrlSeeds()
 {
+    if (!m_torrent)
+        return;
+
     m_ui->listWebSeeds->clear();
     qDebug("Loading URL seeds");
     const QVector<QUrl> hcSeeds = m_torrent->urlSeeds();
@@ -639,7 +642,7 @@ void PropertiesWidget::displayFilesListMenu(const QPoint &)
             }
 
             // Save changes
-            filteredFilesChanged();
+            this->applyPriorities();
         };
 
         QMenu *subMenu = menu->addMenu(tr("Priority"));
@@ -692,6 +695,9 @@ void PropertiesWidget::displayFilesListMenu(const QPoint &)
                 const QModelIndex &index = selectedRows[i];
                 m_propListModel->setData(index.sibling(index.row(), PRIORITY)
                     , static_cast<int>(priority));
+
+                // Save changes
+                this->applyPriorities();
             }
         });
     }
@@ -746,21 +752,31 @@ void PropertiesWidget::configure()
     // Speed widget
     if (Preferences::instance()->isSpeedWidgetEnabled())
     {
-        if (!m_speedWidget || !qobject_cast<SpeedWidget *>(m_speedWidget))
+        if (!qobject_cast<SpeedWidget *>(m_speedWidget))
         {
-            m_ui->speedLayout->removeWidget(m_speedWidget);
-            delete m_speedWidget;
-            m_speedWidget = new SpeedWidget {this};
+            if (m_speedWidget)
+            {
+                m_ui->speedLayout->removeWidget(m_speedWidget);
+                delete m_speedWidget;
+            }
+
+            m_speedWidget = new SpeedWidget(this);
             m_ui->speedLayout->addWidget(m_speedWidget);
         }
     }
     else
     {
-        if (!m_speedWidget || !qobject_cast<QLabel *>(m_speedWidget))
+        if (!qobject_cast<QLabel *>(m_speedWidget))
         {
-            m_ui->speedLayout->removeWidget(m_speedWidget);
-            delete m_speedWidget;
-            auto *label = new QLabel(tr("<center><b>Speed graphs are disabled</b><p>You may change this setting in Advanced Options </center>"), this);
+            if (m_speedWidget)
+            {
+                m_ui->speedLayout->removeWidget(m_speedWidget);
+                delete m_speedWidget;
+            }
+
+            const auto displayText = QString::fromLatin1("<center><b>%1</b><p>%2</p></center>")
+                .arg(tr("Speed graphs are disabled"), tr("You can enable it in Advanced Options"));
+            auto *label = new QLabel(displayText, this);
             label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
             m_speedWidget = label;
             m_ui->speedLayout->addWidget(m_speedWidget);
