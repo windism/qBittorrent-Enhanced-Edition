@@ -147,9 +147,9 @@ void ProgramUpdater::rssDownloadFinished(const Net::DownloadResult &result)
                 type = getStringValue(xml);
             else if (inItem && (xml.name() == QLatin1String("version")))
                 version = getStringValue(xml);
-            else if (inItem && xml.name() == "content")
+            else if (inItem && (xml.name() == QLatin1String("content")))
                 content = getStringValue(xml);
-            else if (inItem && xml.name() == "update")
+            else if (inItem && (xml.name() == QLatin1String("update")))
                 nextUpdate = getStringValue(xml);
         }
         else if (xml.isEndElement())
