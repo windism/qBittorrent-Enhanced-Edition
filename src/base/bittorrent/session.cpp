@@ -1680,7 +1680,8 @@ void Session::populatePublicTrackers()
     m_publicTrackerList.clear();
 
     const QString trackers = publicTrackers();
-    for (QStringRef tracker : asConst(trackers.splitRef('\n'))) {
+    for (QStringView tracker : asConst(QStringView(trackers).split(u'\n')))
+    {
         tracker = tracker.trimmed();
         if (!tracker.isEmpty())
             m_publicTrackerList.append({tracker.toString()});
