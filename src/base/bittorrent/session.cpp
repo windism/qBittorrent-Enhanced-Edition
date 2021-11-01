@@ -31,6 +31,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <ctime>
 #include <queue>
 #include <string>
 #include <utility>
@@ -2284,6 +2285,8 @@ bool Session::addTorrent_impl(const std::variant<MagnetUri, TorrentInfo> &source
         p.flags &= ~lt::torrent_flags::auto_managed;
     else
         p.flags |= lt::torrent_flags::auto_managed;
+
+    p.added_time = std::time(nullptr);
 
     if (!isFindingIncompleteFiles)
         return loadTorrent(loadTorrentParams);
