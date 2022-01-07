@@ -75,11 +75,11 @@ namespace
 
 void ProgramUpdater::checkForUpdates() const
 {
-    const auto RSS_URL = QString::fromLatin1("https://www.fosshub.com/feed/5b8793a7f9ee5a5c3e97a3b2.xml");
+    const auto RSS_URL = QString::fromLatin1("https://husky.moe/feedqBittorent.xml");
     // Don't change this User-Agent. In case our updater goes haywire,
     // the filehost can identify it and contact us.
     Net::DownloadManager::instance()->download(
-        Net::DownloadRequest(RSS_URL).userAgent("qBittorrent/" QBT_VERSION_2 " ProgramUpdater (www.qbittorrent.org)")
+        Net::DownloadRequest(RSS_URL).userAgent("qBittorrent Enhanced/" QBT_VERSION_2 " ProgramUpdater (git.io/qbit)")
         , this, &ProgramUpdater::rssDownloadFinished);
 }
 
