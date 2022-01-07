@@ -112,9 +112,9 @@ void AppController::preferencesAction()
     data["torrent_changed_tmm_enabled"] = !session->isDisableAutoTMMWhenCategoryChanged();
     data["save_path_changed_tmm_enabled"] = !session->isDisableAutoTMMWhenDefaultSavePathChanged();
     data["category_changed_tmm_enabled"] = !session->isDisableAutoTMMWhenCategorySavePathChanged();
-    data["save_path"] = Utils::Fs::toNativePath(session->defaultSavePath());
-    data["temp_path_enabled"] = session->isTempPathEnabled();
-    data["temp_path"] = Utils::Fs::toNativePath(session->tempPath());
+    data["save_path"] = Utils::Fs::toNativePath(session->savePath());
+    data["temp_path_enabled"] = session->isDownloadPathEnabled();
+    data["temp_path"] = Utils::Fs::toNativePath(session->downloadPath());
     data["export_dir"] = Utils::Fs::toNativePath(session->torrentExportDirectory());
     data["export_dir_fin"] = Utils::Fs::toNativePath(session->finishedTorrentExportDirectory());
 
@@ -200,7 +200,7 @@ void AppController::preferencesAction()
     const QTime end_time = pref->getSchedulerEndTime();
     data["schedule_to_hour"] = end_time.hour();
     data["schedule_to_min"] = end_time.minute();
-    data["scheduler_days"] = pref->getSchedulerDays();
+    data["scheduler_days"] = static_cast<int>(pref->getSchedulerDays());
 
     // Bittorrent
     // Privacy
@@ -269,7 +269,7 @@ void AppController::preferencesAction()
     data["web_ui_reverse_proxies_list"] = pref->getWebUITrustedReverseProxiesList();
     // Update my dynamic domain name
     data["dyndns_enabled"] = pref->isDynDNSEnabled();
-    data["dyndns_service"] = pref->getDynDNSService();
+    data["dyndns_service"] = static_cast<int>(pref->getDynDNSService());
     data["dyndns_username"] = pref->getDynDNSUsername();
     data["dyndns_password"] = pref->getDynDNSPassword();
     data["dyndns_domain"] = pref->getDynDomainName();
@@ -404,11 +404,11 @@ void AppController::setPreferencesAction()
     if (hasKey("category_changed_tmm_enabled"))
         session->setDisableAutoTMMWhenCategorySavePathChanged(!it.value().toBool());
     if (hasKey("save_path"))
-        session->setDefaultSavePath(it.value().toString());
+        session->setSavePath(it.value().toString());
     if (hasKey("temp_path_enabled"))
-        session->setTempPathEnabled(it.value().toBool());
+        session->setDownloadPathEnabled(it.value().toBool());
     if (hasKey("temp_path"))
-        session->setTempPath(it.value().toString());
+        session->setDownloadPath(it.value().toString());
     if (hasKey("export_dir"))
         session->setTorrentExportDirectory(it.value().toString());
     if (hasKey("export_dir_fin"))
@@ -569,7 +569,7 @@ void AppController::setPreferencesAction()
     if (m.contains("schedule_to_hour") && m.contains("schedule_to_min"))
         pref->setSchedulerEndTime(QTime(m["schedule_to_hour"].toInt(), m["schedule_to_min"].toInt()));
     if (hasKey("scheduler_days"))
-        pref->setSchedulerDays(SchedulerDays(it.value().toInt()));
+        pref->setSchedulerDays(static_cast<Scheduler::Days>(it.value().toInt()));
 
     // Bittorrent
     // Privacy
@@ -711,7 +711,7 @@ void AppController::setPreferencesAction()
     if (hasKey("dyndns_enabled"))
         pref->setDynDNSEnabled(it.value().toBool());
     if (hasKey("dyndns_service"))
-        pref->setDynDNSService(it.value().toInt());
+        pref->setDynDNSService(static_cast<DNS::Service>(it.value().toInt()));
     if (hasKey("dyndns_username"))
         pref->setDynDNSUsername(it.value().toString());
     if (hasKey("dyndns_password"))
@@ -879,7 +879,7 @@ void AppController::setPreferencesAction()
 
 void AppController::defaultSavePathAction()
 {
-    setResult(BitTorrent::Session::instance()->defaultSavePath());
+    setResult(BitTorrent::Session::instance()->savePath());
 }
 
 void AppController::networkInterfaceListAction()

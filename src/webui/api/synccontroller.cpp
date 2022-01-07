@@ -210,6 +210,7 @@ namespace
             case QMetaType::ULongLong:
             case QMetaType::UInt:
             case QMetaType::QDateTime:
+            case QMetaType::Nullptr:
                 if (prevData[key] != value)
                     syncData[key] = value;
                 break;
@@ -283,7 +284,8 @@ namespace
                     }
                     break;
                 default:
-                    Q_ASSERT(0);
+                    Q_ASSERT(false);
+                    break;
                 }
             }
 
@@ -426,6 +428,7 @@ SyncController::~SyncController()
 //  - "uploaded_session": Amount of data uploaded since program open
 //  - "amount_left": Amount of data left to download
 //  - "save_path": Torrent save path
+//  - "download_path": Torrent download path
 //  - "completed": Amount of data completed
 //  - "max_ratio": Upload max share ratio
 //  - "max_seeding_time": Upload max seeding time
@@ -496,15 +499,13 @@ void SyncController::maindataAction()
     data["torrents"] = torrents;
 
     QVariantHash categories;
-    const QStringMap categoriesList = session->categories();
-    for (auto it = categoriesList.cbegin(); it != categoriesList.cend(); ++it)
+    const QStringList categoriesList = session->categories();
+    for (const auto &categoryName : categoriesList)
     {
-        const QString &key = it.key();
-        categories[key] = QVariantMap
-        {
-            {"name", key},
-            {"savePath", it.value()}
-        };
+        const BitTorrent::CategoryOptions categoryOptions = session->categoryOptions(categoryName);
+        QJsonObject category = categoryOptions.toJSON();
+        category.insert(QLatin1String("name"), categoryName);
+        categories[categoryName] = category.toVariantMap();
     }
     data["categories"] = categories;
 
@@ -574,9 +575,11 @@ void SyncController::torrentPeersAction()
             {KEY_PEER_CONNECTION_TYPE, pi.connectionType()},
             {KEY_PEER_FLAGS, pi.flags()},
             {KEY_PEER_FLAGS_DESCRIPTION, pi.flagsDescription()},
-            {KEY_PEER_RELEVANCE, pi.relevance()},
-            {KEY_PEER_FILES, torrent->info().filesForPiece(pi.downloadingPieceIndex()).join('\n')}
+            {KEY_PEER_RELEVANCE, pi.relevance()}
         };
+
+        if (torrent->hasMetadata())
+            peer.insert(KEY_PEER_FILES, torrent->info().filesForPiece(pi.downloadingPieceIndex()).join('\n'));
 
         if (resolvePeerCountries)
         {

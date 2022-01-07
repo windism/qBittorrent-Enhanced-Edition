@@ -99,14 +99,15 @@ namespace BitTorrent
         qlonglong wastedSize() const override;
         QString currentTracker() const override;
 
-        QString savePath(bool actual = false) const override;
-        QString rootPath(bool actual = false) const override;
-        QString contentPath(bool actual = false) const override;
-
-        bool useTempPath() const override;
-
         bool isAutoTMMEnabled() const override;
         void setAutoTMMEnabled(bool enabled) override;
+        QString savePath() const override;
+        void setSavePath(const QString &path) override;
+        QString downloadPath() const override;
+        void setDownloadPath(const QString &path) override;
+        QString actualStorageLocation() const override;
+        QString rootPath() const override;
+        QString contentPath() const override;
         QString category() const override;
         bool belongsToCategory(const QString &category) const override;
         bool setCategory(const QString &category) override;
@@ -201,7 +202,6 @@ namespace BitTorrent
         void setFirstLastPiecePriority(bool enabled) override;
         void pause() override;
         void resume(TorrentOperatingMode mode = TorrentOperatingMode::AutoManaged) override;
-        void move(QString path) override;
         void forceReannounce(int index = -1) override;
         void forceDHTAnnounce() override;
         void forceRecheck() override;
@@ -232,14 +232,12 @@ namespace BitTorrent
 
         void handleAlert(const lt::alert *a);
         void handleStateUpdate(const lt::torrent_status &nativeStatus);
-        void handleTempPathChanged();
-        void handleCategorySavePathChanged();
+        void handleDownloadPathChanged();
+        void handleCategoryOptionsChanged();
         void handleAppendExtensionToggled();
         void saveResumeData();
         void handleMoveStorageJobFinished(bool hasOutstandingJob);
         void fileSearchFinished(const QString &savePath, const QStringList &fileNames);
-
-        QString actualStorageLocation() const;
 
     private:
         using EventTrigger = std::function<void ()>;
@@ -272,9 +270,7 @@ namespace BitTorrent
 
         void setAutoManaged(bool enable);
 
-        void adjustActualSavePath();
-        void adjustActualSavePath_impl();
-        void move_impl(QString path, MoveStorageMode mode);
+        void adjustStorageLocation();
         void moveStorage(const QString &newPath, MoveStorageMode mode);
         void manageIncompleteFiles();
         void applyFirstLastPiecePriority(bool enabled, const QVector<DownloadPriority> &updatedFilePrio = {});
@@ -289,6 +285,7 @@ namespace BitTorrent
         lt::torrent_status m_nativeStatus;
         TorrentState m_state = TorrentState::Unknown;
         TorrentInfo m_torrentInfo;
+        QStringList m_filePaths;
         SpeedMonitor m_speedMonitor;
 
         InfoHash m_infoHash;
@@ -301,18 +298,13 @@ namespace BitTorrent
 
         MaintenanceJob m_maintenanceJob = MaintenanceJob::None;
 
-#ifndef QBT_USES_LIBTORRENT2
-        // Until libtorrent provided an "old_name" field in `file_renamed_alert`
-        // we relied on this workaround to remove empty leftover folders
-        QHash<int, QVector<QString>> m_oldPath;
-#endif
-
         QHash<QString, QMap<lt::tcp::endpoint, int>> m_trackerPeerCounts;
         FileErrorInfo m_lastFileError;
 
         // Persistent data
         QString m_name;
         QString m_savePath;
+        QString m_downloadPath;
         QString m_category;
         TagSet m_tags;
         qreal m_ratioLimit;

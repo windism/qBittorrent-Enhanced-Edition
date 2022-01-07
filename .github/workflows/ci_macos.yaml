@@ -9,11 +9,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        libt_version: ["2.0.4", "1.2.14"]
+        libt_version: ["2.0.5", "1.2.15"]
         qbt_gui: ["GUI=ON", "GUI=OFF"]
         qt_version: ["5.15.2", "6.2.0"]
         exclude:
-          - libt_version: "1.2.14"
+          - libt_version: "1.2.15"
             qt_version: "6.2.0"
 
     env:
@@ -42,14 +42,18 @@ jobs:
 
       - name: Install libtorrent
         run: |
-          git clone --branch v${{ matrix.libt_version }} --depth 1 https://github.com/arvidn/libtorrent.git
+          git clone \
+            --branch v${{ matrix.libt_version }} \
+            --depth 1 \
+            --recurse-submodules \
+            https://github.com/arvidn/libtorrent.git
           cd libtorrent
-          git submodule update --init --recursive
           cmake \
             -B build \
             -G "Ninja" \
             -DCMAKE_BUILD_TYPE=RelWithDebInfo \
             -DCMAKE_CXX_STANDARD=17 \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
             -Ddeprecated-functions=OFF \
             -DOPENSSL_ROOT_DIR="${{ env.openssl_root }}"
           cmake --build build
@@ -58,12 +62,13 @@ jobs:
       - name: Build qBittorrent (Qt5)
         if: ${{ startsWith(matrix.qt_version, 5) }}
         run: |
+          lupdate -extensions c,cpp,h,hpp,ui ./
           cmake \
             -B build \
             -G "Ninja" \
             -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
             -DOPENSSL_ROOT_DIR="${{ env.openssl_root }}" \
-            -DQt5_DIR="$Qt5_DIR" \
             -DVERBOSE_CONFIGURE=ON \
             -D${{ matrix.qbt_gui }}
           cmake --build build
@@ -71,21 +76,29 @@ jobs:
       - name: Build qBittorrent (Qt6)
         if: ${{ startsWith(matrix.qt_version, 6) }}
         run: |
+          lupdate -extensions c,cpp,h,hpp,ui ./
           cmake \
             -B build \
             -G "Ninja" \
             -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
             -DOPENSSL_ROOT_DIR="${{ env.openssl_root }}" \
             -DQT6=ON \
-            -DQt6_DIR="$Qt6_DIR" \
             -DVERBOSE_CONFIGURE=ON \
             -D${{ matrix.qbt_gui }}
           cmake --build build
+
+      - name: Prepare build artifacts
+        run: |
+          mkdir upload
+          mv build/qbittorrent*.app upload
+          mkdir upload/cmake
+          cp build/compile_commands.json upload/cmake
+          mkdir upload/cmake/libtorrent
+          cp libtorrent/build/compile_commands.json upload/cmake/libtorrent
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: qBittorrent-CI_macOS_${{ matrix.qbt_gui }}_libtorrent-${{ matrix.libt_version }}_Qt-${{ matrix.qt_version }}
-          path: |
-            build/qbittorrent.app
-            build/qbittorrent-nox.app
+          path: upload
