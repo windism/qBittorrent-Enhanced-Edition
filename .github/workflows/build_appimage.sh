@@ -56,7 +56,7 @@ apt install -y \
   libbrotli-dev \
   libxcb1-dev \
   libicu-dev \
-  libgtk-3-dev \
+  libgtk2.0-dev \
   g++-8 \
   build-essential \
   libgl1-mesa-dev \
@@ -86,8 +86,9 @@ apt install -y \
   libxkbcommon-x11-dev
 
 apt autoremove --purge -y
-export CC=gcc-8
-export CXX=g++-8
+# make gcc-8 as default gcc
+ln -svf /usr/bin/gcc-8 /usr/bin/gcc
+ln -svf /usr/bin/g++-8 /usr/bin/g++
 # strip all compiled files by default
 export CFLAGS='-s'
 export CXXFLAGS='-s'
@@ -111,6 +112,15 @@ retry() {
   done
   echo "execute '$@' failed" >&2
   return 1
+}
+
+# join array to string. E.g join_by ',' "${arr[@]}"
+join_by() {
+  local separator="$1"
+  shift
+  local first="$1"
+  shift
+  printf "%s" "$first" "${@/#/$separator}"
 }
 
 # install cmake and ninja-build
@@ -167,6 +177,10 @@ rm -fr CMakeCache.txt CMakeFiles
   -c++std c++17 \
   -optimize-size \
   -openssl-linked \
+  -qt-libjpeg \
+  -qt-libpng \
+  -qt-pcre \
+  -qt-harfbuzz \
   -no-opengl \
   -no-directfb \
   -no-linuxfb \
@@ -199,6 +213,20 @@ rm -fr CMakeCache.txt
 "${QT_BASE_DIR}/bin/qt-configure-module" .
 cmake --build . --parallel
 cmake --install .
+
+# install qt6gtk2 for better look
+if [ ! -d "/usr/src/qt6gtk2/" ]; then
+  qt6gtk2_git_url="https://github.com/trialuser02/qt6gtk2.git"
+  if [ x"${USE_CHINA_MIRROR}" = x1 ]; then
+    qt6gtk2_git_url="https://ghproxy.com/${qt6gtk2_git_url}"
+  fi
+  retry git clone --depth 1 --recursive "${qt6gtk2_git_url}" "/usr/src/qt6gtk2/"
+fi
+cd "/usr/src/qt6gtk2/"
+git pull
+git clean -fdx
+qmake
+make -j$(nproc) install
 
 # build latest boost
 boost_ver="$(retry curl -ksSfL --compressed https://www.boost.org/users/download/ \| grep "'>Version\s*'" \| sed -r "'s/.*Version\s*([^<]+).*/\1/'" \| head -1)"
@@ -260,24 +288,6 @@ rm -fr /tmp/qbee/
 cmake --install build
 
 # build AppImage
-# linuxdeploy_download_url="https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
-# linuxdeploy_plugin_qt_download_url="https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage"
-# if [ x"${USE_CHINA_MIRROR}" = x1 ]; then
-#   linuxdeploy_download_url="https://ghproxy.com/${linuxdeploy_download_url}"
-#   linuxdeploy_plugin_qt_download_url="https://ghproxy.com/${linuxdeploy_plugin_qt_download_url}"
-# fi
-# [ -x "/tmp/linuxdeploy-x86_64.AppImage" ] || retry curl -LC- -o /tmp/linuxdeploy-x86_64.AppImage "${linuxdeploy_download_url}"
-# [ -x "/tmp/linuxdeploy-plugin-qt-x86_64.AppImage" ] || retry curl -LC- -o /tmp/linuxdeploy-plugin-qt-x86_64.AppImage "${linuxdeploy_plugin_qt_download_url}"
-# chmod -v +x '/tmp/linuxdeploy-plugin-qt-x86_64.AppImage' '/tmp/linuxdeploy-x86_64.AppImage'
-# cd "/tmp/qbee"
-# mkdir -p "/tmp/qbee/AppDir/apprun-hooks/"
-# echo 'export XDG_DATA_DIRS="${APPDIR:-"$(dirname "${BASH_SOURCE[0]}")/.."}/usr/share:${XDG_DATA_DIRS}:/usr/share:/usr/local/share"' >"/tmp/qbee/AppDir/apprun-hooks/xdg_data_dirs.sh"
-# APPIMAGE_EXTRACT_AND_RUN=1 \
-#   OUTPUT='qBittorrent-Enhanced-Edition.AppImage' \
-#   UPDATE_INFORMATION="zsync|https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/qBittorrent-Enhanced-Edition.AppImage.zsync" \
-#   EXTRA_QT_PLUGINS=tls \
-#   /tmp/linuxdeploy-x86_64.AppImage --appdir="/tmp/qbee/AppDir" --output=appimage --plugin qt
-
 linuxdeploy_qt_download_url="https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
 if [ x"${USE_CHINA_MIRROR}" = x1 ]; then
   linuxdeploy_qt_download_url="https://ghproxy.com/${linuxdeploy_qt_download_url}"
@@ -286,23 +296,66 @@ fi
 chmod -v +x '/tmp/linuxdeployqt-continuous-x86_64.AppImage'
 cd "/tmp/qbee"
 ln -svf usr/share/icons/hicolor/scalable/apps/qbittorrent.svg /tmp/qbee/AppDir/
-# this script is from linuxdeploy-plugin-qt: https://github.com/linuxdeploy/linuxdeploy-plugin-qt/blob/master/src/deployment.h#L98
+ln -svf qbittorrent.svg /tmp/qbee/AppDir/.DirIcon
 cat >/tmp/qbee/AppDir/AppRun <<EOF
 #!/bin/bash -e
 
 this_dir="\$(readlink -f "\$(dirname "\$0")")"
-if [ -z "\${QT_QPA_PLATFORMTHEME}" ]; then
-  case "\${XDG_CURRENT_DESKTOP}" in
-      *GNOME*|*gnome*|*XFCE*)
-          export QT_QPA_PLATFORMTHEME=gtk3
-          ;;
-  esac
-fi
 export XDG_DATA_DIRS="\${this_dir}/usr/share:\${XDG_DATA_DIRS}:/usr/share:/usr/local/share"
+export QT_QPA_PLATFORMTHEMES=qt6gtk2
+export QT_STYLE_OVERRIDE=qt6gtk2
 
 exec "\${this_dir}/usr/bin/qbittorrent" "\$@"
 EOF
 chmod 755 -v /tmp/qbee/AppDir/AppRun
+
+extra_plugins=(
+  iconengines
+  imageformats
+  platforminputcontexts
+  platforms/libqxcb.so
+  platformthemes
+  styles
+  sqldrivers
+  tls
+)
+exclude_libs=(
+  libatk-1.0.so.0
+  libatk-bridge-2.0.so.0
+  libatspi.so.0
+  libblkid.so.1
+  libboost_filesystem.so.1.58.0
+  libboost_system.so.1.58.0
+  libcairo-gobject.so.2
+  libcairo.so.2
+  libcapnp-0.5.3.so
+  libdatrie.so.1
+  libdbus-1.so.3
+  libepoxy.so.0
+  libffi.so.6
+  libgcrypt.so.20
+  libgdk-3.so.0
+  libgdk_pixbuf-2.0.so.0
+  libgdk-x11-2.0.so.0
+  libgmodule-2.0.so.0
+  libgraphite2.so.3
+  libgtk-3.so.0
+  libgtk-x11-2.0.so.0
+  libkj-0.5.3.so
+  libmirclient.so.9
+  libmircommon.so.7
+  libmircore.so.1
+  libmirprotobuf.so.3
+  libmount.so.1
+  libpixman-1.so.0
+  libprotobuf-lite.so.9
+  libselinux.so.1
+  libsystemd.so.0
+  libwayland-client.so.0
+  libwayland-cursor.so.0
+  libwayland-egl.so.1
+)
+
 APPIMAGE_EXTRACT_AND_RUN=1 \
   /tmp/linuxdeployqt-continuous-x86_64.AppImage \
   /tmp/qbee/AppDir/usr/share/applications/*.desktop \
@@ -310,7 +363,8 @@ APPIMAGE_EXTRACT_AND_RUN=1 \
   -appimage \
   -no-copy-copyright-files \
   -updateinformation="zsync|https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/qBittorrent-Enhanced-Edition.AppImage.zsync" \
-  -extra-plugins=iconengines,imageformats,platforminputcontexts,platforms/libqxcb.so,platformthemes,sqldrivers,tls
+  -extra-plugins="$(join_by ',' "${extra_plugins[@]}")" \
+  -exclude-libs="$(join_by ',' "${exclude_libs[@]}")"
 
 cp -fv /tmp/qbee/qBittorrent-x86_64.AppImage "${SELF_DIR}/qBittorrent-Enhanced-Edition.AppImage"
 cp -fv /tmp/qbee/qBittorrent-x86_64.AppImage.zsync "${SELF_DIR}/qBittorrent-Enhanced-Edition.AppImage.zsync"
