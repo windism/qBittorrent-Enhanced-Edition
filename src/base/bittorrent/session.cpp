@@ -1368,6 +1368,11 @@ void Session::loadLTSettings(lt::settings_pack &settingsPack)
 
     lt::settings_pack::io_buffer_mode_t mode = useOSCache() ? lt::settings_pack::enable_os_cache
                                                               : lt::settings_pack::disable_os_cache;
+                                                              
+#ifdef Q_OS_WIN
+    mode = lt::settings_pack::write_through;
+#endif
+                                                              
     settingsPack.set_int(lt::settings_pack::disk_io_read_mode, mode);
     settingsPack.set_int(lt::settings_pack::disk_io_write_mode, mode);
 
