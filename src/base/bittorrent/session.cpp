@@ -331,7 +331,7 @@ Session::Session(QObject *parent)
     , m_announceToAllTrackers(BITTORRENT_SESSION_KEY("AnnounceToAllTrackers"), false)
     , m_announceToAllTiers(BITTORRENT_SESSION_KEY("AnnounceToAllTiers"), true)
     , m_asyncIOThreads(BITTORRENT_SESSION_KEY("AsyncIOThreadsCount"), 10)
-    , m_hashingThreads(BITTORRENT_SESSION_KEY("HashingThreadsCount"), 2)
+    , m_hashingThreads(BITTORRENT_SESSION_KEY("HashingThreadsCount"), 1)
     , m_filePoolSize(BITTORRENT_SESSION_KEY("FilePoolSize"), 5000)
     , m_checkingMemUsage(BITTORRENT_SESSION_KEY("CheckingMemUsageSize"), 32)
     , m_diskCacheSize(BITTORRENT_SESSION_KEY("DiskCacheSize"), -1)
@@ -2286,8 +2286,8 @@ bool Session::addTorrent_impl(const std::variant<MagnetUri, TorrentInfo> &source
         const auto nativeIndexes = torrentInfo.nativeIndexes();
         if (!filePaths.isEmpty())
         {
-            for (int index = 0; index < addTorrentParams.filePaths.size(); ++index)
-                p.renamed_files[nativeIndexes[index]] = Utils::Fs::toNativePath(addTorrentParams.filePaths.at(index)).toStdString();
+            for (int index = 0; index < filePaths.size(); ++index)
+                p.renamed_files[nativeIndexes[index]] = Utils::Fs::toNativePath(filePaths.at(index)).toStdString();
         }
 
         Q_ASSERT(p.file_priorities.empty());
@@ -2445,9 +2445,9 @@ bool Session::downloadMetadata(const MagnetUri &magnetUri)
     return true;
 }
 
-void Session::exportTorrentFile(const TorrentInfo &torrentInfo, const QString &folderPath, const QString &baseName)
+void Session::exportTorrentFile(const Torrent *torrent, const QString &folderPath)
 {
-    const QString validName = Utils::Fs::toValidFileSystemName(baseName);
+    const QString validName = Utils::Fs::toValidFileSystemName(torrent->name());
     QString torrentExportFilename = QString::fromLatin1("%1.torrent").arg(validName);
     const QDir exportDir {folderPath};
     if (exportDir.exists() || exportDir.mkpath(exportDir.absolutePath()))
@@ -2461,11 +2461,11 @@ void Session::exportTorrentFile(const TorrentInfo &torrentInfo, const QString &f
             newTorrentPath = exportDir.absoluteFilePath(torrentExportFilename);
         }
 
-        const nonstd::expected<void, QString> result = torrentInfo.saveToFile(newTorrentPath);
+        const nonstd::expected<void, QString> result = torrent->exportToFile(newTorrentPath);
         if (!result)
         {
-            LogMsg(tr("Couldn't export torrent metadata file '%1'. Reason: %2.")
-                   .arg(newTorrentPath, result.error()), Log::WARNING);
+            LogMsg(tr("Failed to export torrent. Torrent: \"%1\". Destination: \"%2\". Reason: \"%3\"")
+                   .arg(torrent->name(), newTorrentPath, result.error()), Log::WARNING);
         }
     }
 }
@@ -4098,16 +4098,8 @@ void Session::handleTorrentUrlSeedsRemoved(TorrentImpl *const torrent, const QVe
 
 void Session::handleTorrentMetadataReceived(TorrentImpl *const torrent)
 {
-    // Copy the torrent file to the export folder
     if (!torrentExportDirectory().isEmpty())
-    {
-#ifdef QBT_USES_LIBTORRENT2
-        const TorrentInfo torrentInfo {*torrent->nativeHandle().torrent_file_with_hashes()};
-#else
-        const TorrentInfo torrentInfo {*torrent->nativeHandle().torrent_file()};
-#endif
-        exportTorrentFile(torrentInfo, torrentExportDirectory(), torrent->name());
-    }
+        exportTorrentFile(torrent, torrentExportDirectory());
 
     emit torrentMetadataReceived(torrent);
 }
@@ -4154,16 +4146,8 @@ void Session::handleTorrentFinished(TorrentImpl *const torrent)
         }
     }
 
-    // Move .torrent file to another folder
     if (!finishedTorrentExportDirectory().isEmpty())
-    {
-#ifdef QBT_USES_LIBTORRENT2
-        const TorrentInfo torrentInfo {*torrent->nativeHandle().torrent_file_with_hashes()};
-#else
-        const TorrentInfo torrentInfo {*torrent->nativeHandle().torrent_file()};
-#endif
-        exportTorrentFile(torrentInfo, finishedTorrentExportDirectory(), torrent->name());
-    }
+        exportTorrentFile(torrent, finishedTorrentExportDirectory());
 
     if (!hasUnfinishedTorrents())
         emit allTorrentsFinished();
@@ -4565,21 +4549,24 @@ void Session::startUpTorrents()
         }
         else if (torrentID == torrentIDv2)
         {
-            torrentID = torrentIDv1;
-            needStore = true;
-            m_resumeDataStorage->remove(torrentIDv2);
-
-            if (indexedTorrents.contains(torrentID))
+            if (isHybrid)
             {
-                skippedIDs.insert(torrentID);
+                torrentID = torrentIDv1;
+                needStore = true;
+                m_resumeDataStorage->remove(torrentIDv2);
 
-                const std::optional<LoadTorrentParams> loadPreferredResumeDataResult = startupStorage->load(torrentID);
-                if (loadPreferredResumeDataResult)
+                if (indexedTorrents.contains(torrentID))
                 {
-                    std::shared_ptr<lt::torrent_info> ti = resumeData.ltAddTorrentParams.ti;
-                    resumeData = *loadPreferredResumeDataResult;
-                    if (!resumeData.ltAddTorrentParams.ti)
-                        resumeData.ltAddTorrentParams.ti = ti;
+                    skippedIDs.insert(torrentID);
+
+                    const std::optional<LoadTorrentParams> loadPreferredResumeDataResult = startupStorage->load(torrentID);
+                    if (loadPreferredResumeDataResult)
+                    {
+                        std::shared_ptr<lt::torrent_info> ti = resumeData.ltAddTorrentParams.ti;
+                        resumeData = *loadPreferredResumeDataResult;
+                        if (!resumeData.ltAddTorrentParams.ti)
+                            resumeData.ltAddTorrentParams.ti = ti;
+                    }
                 }
             }
         }
@@ -4892,12 +4879,8 @@ void Session::createTorrent(const lt::torrent_handle &nativeHandle)
         // The following is useless for newly added magnet
         if (hasMetadata)
         {
-            // Copy the torrent file to the export folder
             if (!torrentExportDirectory().isEmpty())
-            {
-                const TorrentInfo torrentInfo {*params.ltAddTorrentParams.ti};
-                exportTorrentFile(torrentInfo, torrentExportDirectory(), torrent->name());
-            }
+                exportTorrentFile(torrent, torrentExportDirectory());
         }
 
         if (isAddTrackersEnabled() && !torrent->isPrivate())
