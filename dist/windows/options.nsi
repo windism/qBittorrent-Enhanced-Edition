@@ -11,6 +11,9 @@ XPStyle on
 ;Uncomment when packaging 64bit qbittorrent
 ;!define APP64BIT
 
+;Uncomment when packaging qbittorrent with Qt6
+;!define APPQT6
+
 !include "MUI.nsh"
 !include "UAC.nsh"
 !include "FileFunc.nsh"
@@ -28,13 +31,19 @@ XPStyle on
 !define CSIDL_LOCALAPPDATA '0x1C' ;Local Application Data path
 
 ; Program specific
-!define PROG_VERSION "4.4.3.10"
+!define PROG_VERSION "4.4.3.11"
 
 !define MUI_FINISHPAGE_RUN
 !define MUI_FINISHPAGE_RUN_FUNCTION PageFinishRun
 !define MUI_FINISHPAGE_RUN_TEXT $(launch_qbt)
 
-!ifndef APP64BIT
+!ifdef APPQT6
+  ; The name of the installer
+  Name "qBittorrent Enhanced Edition ${PROG_VERSION}"
+
+  ; The file to write
+  OutFile "qbittorrent_enhanced_${PROG_VERSION}_Qt6_setup.exe"
+!else !ifdef APP64BIT
   ; The name of the installer
   Name "qBittorrent Enhanced Edition ${PROG_VERSION}"
 
