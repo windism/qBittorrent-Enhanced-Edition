@@ -62,9 +62,11 @@ namespace
         // qBittorrent section
         QBITTORRENT_HEADER,
         RESUME_DATA_STORAGE,
+#if (defined(Q_OS_WIN) && defined(QBT_USES_LIBTORRENT2))
+        MEMORY_WORKING_SET_LIMIT,
+#endif
 #if defined(Q_OS_WIN)
         OS_MEMORY_PRIORITY,
-        MEMORY_WORKING_SET_LIMIT,
 #endif
         // network interface
         NETWORK_IFACE,
@@ -200,7 +202,9 @@ void AdvancedSettings::saveAdvancedSettings()
     }
     session->setOSMemoryPriority(prio);
 
+#ifdef QBT_USES_LIBTORRENT2
     static_cast<Application *>(QCoreApplication::instance())->setMemoryWorkingSetLimit(m_spinBoxMemoryWorkingSetLimit.value());
+#endif
 #endif
     // Async IO threads
     session->setAsyncIOThreads(m_spinBoxAsyncIOThreads.value());
@@ -449,6 +453,7 @@ void AdvancedSettings::loadAdvancedSettings()
         + ' ' + makeLink("https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-memory_priority_information", "(?)"))
         , &m_comboBoxOSMemoryPriority);
 
+#ifdef QBT_USES_LIBTORRENT2
     m_spinBoxMemoryWorkingSetLimit.setMinimum(1);
     m_spinBoxMemoryWorkingSetLimit.setMaximum(std::numeric_limits<int>::max());
     m_spinBoxMemoryWorkingSetLimit.setSuffix(tr(" MiB"));
@@ -457,6 +462,7 @@ void AdvancedSettings::loadAdvancedSettings()
     addRow(MEMORY_WORKING_SET_LIMIT, (tr("Physical memory (RAM) usage limit")
         + ' ' + makeLink("https://wikipedia.org/wiki/Working_set", "(?)"))
         , &m_spinBoxMemoryWorkingSetLimit);
+#endif
 #endif
 
     // Async IO threads

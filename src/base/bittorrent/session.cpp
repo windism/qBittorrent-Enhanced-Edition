@@ -1416,7 +1416,7 @@ void Session::loadLTSettings(lt::settings_pack &settingsPack)
 
     // Outgoing ports
     settingsPack.set_int(lt::settings_pack::outgoing_port, outgoingPortsMin());
-    settingsPack.set_int(lt::settings_pack::num_outgoing_ports, outgoingPortsMax() - outgoingPortsMin() + 1);
+    settingsPack.set_int(lt::settings_pack::num_outgoing_ports, (outgoingPortsMax() - outgoingPortsMin()));
     // UPnP lease duration
     settingsPack.set_int(lt::settings_pack::upnp_lease_duration, UPnPLeaseDuration());
     // Type of service
@@ -3155,6 +3155,11 @@ void Session::applyOSMemoryPriority() const
     if (!setProcessInformation)  // only available on Windows >= 8
         return;
 
+    using SETTHREADINFORMATION = BOOL (WINAPI *)(HANDLE, THREAD_INFORMATION_CLASS, LPVOID, DWORD);
+    const auto setThreadInformation = Utils::Misc::loadWinAPI<SETTHREADINFORMATION>("Kernel32.dll", "SetThreadInformation");
+    if (!setThreadInformation)  // only available on Windows >= 8
+        return;
+
 #if (_WIN32_WINNT < _WIN32_WINNT_WIN8)
     // this dummy struct is required to compile successfully when targeting older Windows version
     struct MEMORY_PRIORITY_INFORMATION
@@ -3191,6 +3196,11 @@ void Session::applyOSMemoryPriority() const
         break;
     }
     setProcessInformation(::GetCurrentProcess(), ProcessMemoryPriority, &prioInfo, sizeof(prioInfo));
+
+    // To avoid thrashing/sluggishness of the app, set "main event loop" thread to normal memory priority
+    // which is higher/equal than other threads
+    prioInfo.MemoryPriority = MEMORY_PRIORITY_NORMAL;
+    setThreadInformation(::GetCurrentThread(), ThreadMemoryPriority, &prioInfo, sizeof(prioInfo));
 }
 #endif
 
@@ -4646,6 +4656,24 @@ void Session::startUpTorrents()
                 }
             }
         }
+
+        Algorithm::removeIf(resumeData.tags, [this, &torrentID](const QString &tag)
+        {
+            if (hasTag(tag))
+                return false;
+
+            if (addTag(tag))
+            {
+                LogMsg(tr("Detected inconsistent data: tag is missing from the configuration file."
+                          " Tag will be recovered."
+                          " Torrent: \"%1\". Tag: \"%2\"").arg(torrentID.toString(), tag), Log::WARNING);
+                return false;
+            }
+
+            LogMsg(tr("Detected inconsistent data: invalid tag. Torrent: \"%1\". Tag: \"%2\"")
+                   .arg(torrentID.toString(), tag), Log::WARNING);
+            return true;
+        });
 
         qDebug() << "Starting up torrent" << torrentID.toString() << "...";
         if (!loadTorrent(resumeData))
