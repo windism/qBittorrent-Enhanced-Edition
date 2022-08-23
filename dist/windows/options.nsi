@@ -31,7 +31,7 @@ XPStyle on
 !define CSIDL_LOCALAPPDATA '0x1C' ;Local Application Data path
 
 ; Program specific
-!define PROG_VERSION "4.4.3.12"
+!define PROG_VERSION "4.4.4.10"
 
 !define MUI_FINISHPAGE_RUN
 !define MUI_FINISHPAGE_RUN_FUNCTION PageFinishRun
@@ -64,7 +64,7 @@ VIAddVersionKey "LegalCopyright" "Copyright ©2016-2022 The qBittorrent Enhanced
 VIAddVersionKey "FileDescription" "qBittorrent Enhanced Edition - A Enhanced Client based on qBittorrent"
 VIAddVersionKey "FileVersion" "${PROG_VERSION}"
 
-VIProductVersion "${PROG_VERSION}"
+VIProductVersion "${PROG_VERSION}.0"
 
 ; The default installation directory. It changes depending if we install in the 64bit dir or not.
 ; A caveat of this is if a user has installed a 32bit version and then runs the 64bit installer
