@@ -12,7 +12,7 @@ set -o pipefail
 
 # match qt version prefix. E.g 5 --> 5.15.2, 5.12 --> 5.12.10
 export QT_VER_PREFIX="6"
-export LIBTORRENT_BRANCH="RC_2_0"
+export LIBTORRENT_BRANCH="RC_1_2"
 
 rm -f /etc/apt/sources.list.d/*.list*
 # Ubuntu mirror for local building
