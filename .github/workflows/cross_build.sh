@@ -83,8 +83,6 @@ i686-*-mingw*)
   ;;
 esac
 
-export QT_VER_PREFIX="6"
-export LIBTORRENT_BRANCH="RC_2_0"
 export CROSS_ROOT="${CROSS_ROOT:-/cross_root}"
 # strip all compiled files by default
 export CFLAGS='-s'
@@ -338,7 +336,6 @@ prepare_qt() {
     -DCMAKE_C_COMPILER="${CROSS_HOST}-gcc" \
     -DCMAKE_SYSROOT="${CROSS_PREFIX}" \
     -DCMAKE_CXX_COMPILER="${CROSS_HOST}-g++"
-  cat config.summary
   cmake --build . --parallel
   cmake --install .
   export QT_BASE_DIR="${CROSS_PREFIX}/opt/qt"
