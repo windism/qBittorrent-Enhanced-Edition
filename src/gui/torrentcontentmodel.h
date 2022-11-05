@@ -31,6 +31,7 @@
 #include <QAbstractItemModel>
 #include <QVector>
 
+#include "base/indexrange.h"
 #include "torrentcontentmodelitem.h"
 
 class QFileIconProvider;
@@ -79,12 +80,12 @@ public:
 signals:
     void filteredFilesChanged();
 
-public slots:
-    void selectAll();
-    void selectNone();
-
 private:
-    TorrentContentModelFolder *m_rootItem;
+    using ColumnInterval = IndexInterval<int>;
+
+    void notifySubtreeUpdated(const QModelIndex &index, const QVector<ColumnInterval> &columns);
+
+    TorrentContentModelFolder *m_rootItem = nullptr;
     QVector<TorrentContentModelFile *> m_filesIndex;
     QFileIconProvider *m_fileIconProvider;
 };
