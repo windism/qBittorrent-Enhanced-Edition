@@ -2090,7 +2090,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Seeding (0)</source>
-        <translation>Seeding (0)</translation>
+        <translation>Γίνεται Seeding (0)</translation>
     </message>
     <message>
         <source>Completed (0)</source>
@@ -2126,7 +2126,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Seeding (%1)</source>
-        <translation>Seeding (%1)</translation>
+        <translation>Γίνεται Seeding (%1)</translation>
     </message>
     <message>
         <source>Completed (%1)</source>
@@ -2480,7 +2480,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Seeding</source>
-        <translation>Seeding</translation>
+        <translation>Γίνεται Seeding</translation>
     </message>
     <message>
         <source>Queued</source>

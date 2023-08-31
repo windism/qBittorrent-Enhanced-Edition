@@ -133,7 +133,7 @@
     </message>
     <message>
         <source>Alternative upload rate limit must be greater than 0 or disabled.</source>
-        <translation type="unfinished" />
+        <translation>Alternatiivne üleslaadimise kiiruse limiit peab olema enam kui 0 või väljalülitatud.</translation>
     </message>
     <message>
         <source>Alternative download rate limit must be greater than 0 or disabled.</source>
@@ -1566,7 +1566,7 @@
     </message>
     <message>
         <source>ms</source>
-        <translation type="unfinished" />
+        <translation> ms</translation>
     </message>
     <message>
         <source>Excluded file names</source>
@@ -1622,7 +1622,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Use proxy for hostname lookup</source>
-        <translation type="unfinished" />
+        <translation>Kasuta proksit, hostinimede otsinguga</translation>
     </message>
     <message>
         <source>Metadata received</source>
@@ -1646,7 +1646,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Resume data storage type (requires restart):</source>
-        <translation type="unfinished" />
+        <translation>Jätkamise andmete salvestuse tüüp (taaskäivitus on vajalik):</translation>
     </message>
     <message>
         <source>Fastresume files</source>

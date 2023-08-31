@@ -110,7 +110,7 @@
     </message>
     <message>
         <source>Remove torrents</source>
-        <translation type="unfinished" />
+        <translation>إزالة التورنت</translation>
     </message>
 </context>
 <context>
@@ -1506,7 +1506,7 @@
     </message>
     <message>
         <source>Memory mapped files</source>
-        <translation type="unfinished" />
+        <translation>ملفات الذاكرة المعينة</translation>
     </message>
     <message>
         <source>Default</source>
@@ -1514,11 +1514,11 @@
     </message>
     <message>
         <source>POSIX-compliant</source>
-        <translation type="unfinished" />
+        <translation>متوافق مع POSIX</translation>
     </message>
     <message>
         <source>This option is less effective on Linux</source>
-        <translation type="unfinished" />
+        <translation>هذا الخيار أقل فعالية على Linux</translation>
     </message>
     <message>
         <source>Disk IO type (libtorrent &gt;= 2.0; requires restart):</source>
@@ -1530,7 +1530,7 @@
     </message>
     <message>
         <source>It controls the internal state update interval which in turn will affect UI updates</source>
-        <translation type="unfinished" />
+        <translation>فهو يتحكم في الفاصل الزمني لتحديث الحالة الداخلية والذي سيؤثر بدوره على تحديثات واجهة المستخدم</translation>
     </message>
     <message>
         <source>Disk IO read mode:</source>
@@ -1538,7 +1538,7 @@
     </message>
     <message>
         <source>Disable OS cache</source>
-        <translation type="unfinished" />
+        <translation>تعطيل ذاكرة التخزين المؤقت لنظام التشغيل</translation>
     </message>
     <message>
         <source>Disk IO write mode:</source>
@@ -1570,7 +1570,7 @@
     </message>
     <message>
         <source>Excluded file names</source>
-        <translation type="unfinished" />
+        <translation>أسماء الملفات المستبعدة</translation>
     </message>
     <message>
         <source>Support internationalized domain name (IDN):</source>
@@ -1602,7 +1602,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Specify reverse proxy IPs (or subnets, e.g. 0.0.0.0/24) in order to use forwarded client address (X-Forwarded-For header). Use ';' to split multiple entries.</source>
-        <translation type="unfinished" />
+        <translation>حدد عناوين IP للوكيل العكسي (أو الشبكات الفرعية، على سبيل المثال 0.0.0.0/24) لاستخدام عنوان العميل المُعاد توجيهه (رأس X-Forwarded-For). يستخدم '؛' لتقسيم إدخالات متعددة.</translation>
     </message>
     <message>
         <source>HTTPS key should not be empty</source>
@@ -1610,7 +1610,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Run external program</source>
-        <translation type="unfinished" />
+        <translation>تشغيل برنامج خارجي</translation>
     </message>
     <message>
         <source>Files checked</source>
@@ -1634,7 +1634,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Torrent stop condition:</source>
-        <translation type="unfinished" />
+        <translation>شرط توقف التورنت:</translation>
     </message>
     <message>
         <source>None</source>
@@ -1745,7 +1745,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Peer ID Client</source>
-        <translation type="unfinished" />
+        <translation>عميل معرف النظير</translation>
     </message>
 </context>
 <context>
@@ -2437,11 +2437,11 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Times Downloaded</source>
-        <translation type="unfinished" />
+        <translation>مرات التنزيل</translation>
     </message>
     <message>
         <source>Add trackers...</source>
-        <translation type="unfinished" />
+        <translation>إضافة تتبع...</translation>
     </message>
 </context>
 <context>
@@ -2452,7 +2452,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Add trackers</source>
-        <translation type="unfinished" />
+        <translation>إضافة تتبع</translation>
     </message>
 </context>
 <context>
@@ -2772,11 +2772,11 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     <name>confirmDeletionDlg</name>
     <message>
         <source>Also permanently delete the files</source>
-        <translation type="unfinished" />
+        <translation>أيضًا احذف الملفات نهائيًا</translation>
     </message>
     <message>
         <source>Remove torrent(s)</source>
-        <translation type="unfinished" />
+        <translation>إزالة التورنت (الملفات)</translation>
     </message>
 </context>
 <context>
@@ -3127,7 +3127,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Remove torrents</source>
-        <translation type="unfinished" />
+        <translation>إزالة التورنت</translation>
     </message>
 </context>
 <context>
@@ -3645,7 +3645,7 @@ Supports the formats: S01E01, 1x1, 2017.12.31 and 31.12.2017 (Date formats also 
     </message>
     <message>
         <source>Remove torrents</source>
-        <translation type="unfinished" />
+        <translation>إزالة التورنت</translation>
     </message>
 </context>
 <context>

@@ -12,7 +12,7 @@
     <name>AddNewTorrentDialog</name>
     <message>
         <source>Category:</source>
-        <translation>श्रेणी :</translation>
+        <translation>श्रेणी:</translation>
     </message>
     <message>
         <source>Start torrent</source>
@@ -24,7 +24,7 @@
     </message>
     <message>
         <source>Torrent Management Mode:</source>
-        <translation>टोरेंट प्रबंधन मोड :</translation>
+        <translation>टोरेंट प्रबंधन मोड:</translation>
     </message>
     <message>
         <source>Content layout:</source>
@@ -64,7 +64,7 @@
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished" />
+        <translation>कोई नहीं</translation>
     </message>
 </context>
 <context>
@@ -110,7 +110,7 @@
     </message>
     <message>
         <source>Remove torrents</source>
-        <translation type="unfinished" />
+        <translation>टौरेंटो को हटायें</translation>
     </message>
 </context>
 <context>
@@ -593,7 +593,7 @@
     </message>
     <message>
         <source>Filters Sidebar</source>
-        <translation type="unfinished" />
+        <translation>छन्नी साइडबार</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -824,11 +824,11 @@
     </message>
     <message>
         <source>Upload:</source>
-        <translation>अपलोड</translation>
+        <translation>अपलोड:</translation>
     </message>
     <message>
         <source>Download:</source>
-        <translation>डाउनलोड</translation>
+        <translation>डाउनलोड:</translation>
     </message>
     <message>
         <source>Alternative Rate Limits</source>
@@ -998,7 +998,7 @@
     </message>
     <message>
         <source>KiB/s</source>
-        <translation>किलोबाइट्स/सेकंड्स</translation>
+        <translation>केबी/से०</translation>
     </message>
     <message>
         <source>Enable clickjacking protection</source>
@@ -1234,7 +1234,7 @@
     </message>
     <message>
         <source>s</source>
-        <translation>सेकंड</translation>
+        <translation>से०</translation>
     </message>
     <message>
         <source>Send buffer watermark:</source>
@@ -1266,7 +1266,7 @@
     </message>
     <message>
         <source>KiB</source>
-        <translation>किलोबाइट्स</translation>
+        <translation>केबी</translation>
     </message>
     <message>
         <source>Round-robin</source>
@@ -1510,7 +1510,7 @@
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished" />
+        <translation>पूर्व निर्धारित</translation>
     </message>
     <message>
         <source>POSIX-compliant</source>
@@ -1630,11 +1630,11 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Torrent stop condition:</source>
-        <translation type="unfinished" />
+        <translation>टाॅरेंट रोकने की स्थिति:</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished" />
+        <translation>कोई नहीं</translation>
     </message>
     <message>
         <source>Example: 172.17.32.0/24, fdff:ffff:c8::/40</source>
@@ -1996,7 +1996,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     <name>SpeedLimitDialog</name>
     <message>
         <source>KiB/s</source>
-        <translation>किलोबाइट्स/सेकंड्स</translation>
+        <translation>केबी/से०</translation>
     </message>
 </context>
 <context>
@@ -2174,11 +2174,11 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Checking (%1)</source>
-        <translation type="unfinished" />
+        <translation>जाँच रहे हैं (%1)</translation>
     </message>
     <message>
         <source>Checking (0)</source>
-        <translation type="unfinished" />
+        <translation>जाँच रहे हैं (0)</translation>
     </message>
 </context>
 <context>
@@ -2772,7 +2772,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Remove torrent(s)</source>
-        <translation type="unfinished" />
+        <translation>टौरेंट(ओं) को हटायें</translation>
     </message>
 </context>
 <context>
@@ -2800,37 +2800,37 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     <message>
         <source>KiB</source>
         <comment>kibibytes (1024 bytes)</comment>
-        <translation>किलोबाइट्स</translation>
+        <translation>केबी</translation>
     </message>
     <message>
         <source>MiB</source>
         <comment>mebibytes (1024 kibibytes)</comment>
-        <translation> मेगाबाइट्स</translation>
+        <translation>एमबी</translation>
     </message>
     <message>
         <source>GiB</source>
         <comment>gibibytes (1024 mibibytes)</comment>
-        <translation>गीगाबाइट्स</translation>
+        <translation>जीबी</translation>
     </message>
     <message>
         <source>TiB</source>
         <comment>tebibytes (1024 gibibytes)</comment>
-        <translation>टेराबाइट्स</translation>
+        <translation>टीबी</translation>
     </message>
     <message>
         <source>PiB</source>
         <comment>pebibytes (1024 tebibytes)</comment>
-        <translation>पेटाबाइट्स</translation>
+        <translation>पीबी</translation>
     </message>
     <message>
         <source>EiB</source>
         <comment>exbibytes (1024 pebibytes)</comment>
-        <translation>एक्साबाइट्स</translation>
+        <translation>ईबी</translation>
     </message>
     <message>
         <source>/s</source>
         <comment>per second</comment>
-        <translation>/सेकंड</translation>
+        <translation>/से०</translation>
     </message>
     <message>
         <source>%1h %2m</source>
@@ -3123,7 +3123,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.</source>
     </message>
     <message>
         <source>Remove torrents</source>
-        <translation type="unfinished" />
+        <translation>टौरेंटो को हटायें</translation>
     </message>
 </context>
 <context>
@@ -3641,7 +3641,7 @@ Supports the formats: S01E01, 1x1, 2017.12.31 and 31.12.2017 (Date formats also 
     </message>
     <message>
         <source>Remove torrents</source>
-        <translation type="unfinished" />
+        <translation>टौरेंटो को हटायें</translation>
     </message>
 </context>
 <context>

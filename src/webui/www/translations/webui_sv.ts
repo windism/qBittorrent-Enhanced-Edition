@@ -345,7 +345,7 @@
     </message>
     <message>
         <source>Open documentation</source>
-        <translation>Öppna dokumentation</translation>
+        <translation>Öppna dokumentationen</translation>
     </message>
     <message>
         <source>Register to handle magnet links...</source>
@@ -1634,7 +1634,7 @@ Använd ";" för att dela upp i flera poster. Du kan använda jokertecknet "*".<
     </message>
     <message>
         <source>Torrent stop condition:</source>
-        <translation>Torrent-stoppvillkor:</translation>
+        <translation>Torrentstoppvillkor:</translation>
     </message>
     <message>
         <source>None</source>

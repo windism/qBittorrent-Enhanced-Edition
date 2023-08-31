@@ -82,15 +82,15 @@
     <name>CategoryFilterWidget</name>
     <message>
         <source>Add category...</source>
-        <translation>범주 추가하기…</translation>
+        <translation>범주 추가…</translation>
     </message>
     <message>
         <source>Remove category</source>
-        <translation>범주 제거하기</translation>
+        <translation>범주 제거</translation>
     </message>
     <message>
         <source>Remove unused categories</source>
-        <translation>사용하지 않는 범주 제거하기</translation>
+        <translation>미사용 범주 제거</translation>
     </message>
     <message>
         <source>Resume torrents</source>
@@ -106,7 +106,7 @@
     </message>
     <message>
         <source>Edit category...</source>
-        <translation>범주 편집하기…</translation>
+        <translation>범주 편집…</translation>
     </message>
     <message>
         <source>Remove torrents</source>
@@ -597,7 +597,7 @@
     </message>
     <message>
         <source>Cancel</source>
-        <translation>취소하기</translation>
+        <translation>취소</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -1342,7 +1342,7 @@
     </message>
     <message>
         <source>Coalesce reads &amp; writes (requires libtorrent &lt; 2.0):</source>
-        <translation>통합 읽기/쓰기(libtorrent &lt; 2.0 필요)</translation>
+        <translation>읽기 &amp; 쓰기 통합하기 (libtorrent &lt; 2.0 필요)</translation>
     </message>
     <message>
         <source>Peer turnover threshold percentage:</source>
@@ -2675,7 +2675,7 @@ DNS 재결합 공격을 방어하기 위해
     </message>
     <message>
         <source>Edit Category</source>
-        <translation>범주 편집하기</translation>
+        <translation>범주 편집</translation>
     </message>
     <message>
         <source>Save path</source>
@@ -2687,7 +2687,7 @@ DNS 재결합 공격을 방어하기 위해
     </message>
     <message>
         <source>Add Tags</source>
-        <translation>태그 추가하기</translation>
+        <translation>태그 추가</translation>
     </message>
     <message>
         <source>Tags</source>
@@ -2877,7 +2877,7 @@ DNS 재결합 공격을 방어하기 위해
     <name>PluginSourceDlg</name>
     <message>
         <source>Cancel</source>
-        <translation>취소하기</translation>
+        <translation>취소</translation>
     </message>
     <message>
         <source>Plugin path:</source>
@@ -3072,7 +3072,7 @@ DNS 재결합 공격을 방어하기 위해
     <name>PeersAdditionDialog</name>
     <message>
         <source>Cancel</source>
-        <translation>취소하기</translation>
+        <translation>취소</translation>
     </message>
     <message>
         <source>Add Peers</source>
@@ -3099,7 +3099,7 @@ DNS 재결합 공격을 방어하기 위해
     </message>
     <message>
         <source>Add tag...</source>
-        <translation>태그 추가하기…</translation>
+        <translation>태그 추가…</translation>
     </message>
     <message>
         <source>Tag:</source>
@@ -3115,7 +3115,7 @@ DNS 재결합 공격을 방어하기 위해
     </message>
     <message>
         <source>Remove unused tags</source>
-        <translation>사용하지 않는 태그 제거하기</translation>
+        <translation>미사용 태그 제거</translation>
     </message>
     <message>
         <source>Invalid tag name</source>
@@ -3123,7 +3123,7 @@ DNS 재결합 공격을 방어하기 위해
     </message>
     <message>
         <source>Remove tag</source>
-        <translation>태그 제거하기</translation>
+        <translation>태그 제거</translation>
     </message>
     <message>
         <source>Remove torrents</source>

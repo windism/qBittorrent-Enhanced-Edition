@@ -593,7 +593,7 @@
     </message>
     <message>
         <source>Filters Sidebar</source>
-        <translation type="unfinished" />
+        <translation>Saring Bilah-pinggir</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -2772,7 +2772,7 @@ Gunakan ';' untuk memisahkan banyak kata. Dapat menggunakan wildcard '*'.</trans
     <name>confirmDeletionDlg</name>
     <message>
         <source>Also permanently delete the files</source>
-        <translation type="unfinished" />
+        <translation>Hapus juga fail secara permanen</translation>
     </message>
     <message>
         <source>Remove torrent(s)</source>
