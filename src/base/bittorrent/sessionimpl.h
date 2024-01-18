@@ -475,9 +475,6 @@ namespace BitTorrent
 
         void invokeAsync(std::function<void ()> func);
 
-    signals:
-        void addTorrentAlertsReceived(qsizetype count);
-
         // Auto ban Unknown Peer
         bool isAutoBanUnknownPeerEnabled() const override;
         void setAutoBanUnknownPeer(bool value) override;
@@ -492,6 +489,9 @@ namespace BitTorrent
         QString publicTrackers() const override;
         void setPublicTrackers(const QString &trackers) override;
         void updatePublicTracker() override;
+
+    signals:
+        void addTorrentAlertsReceived(qsizetype count);
 
     private slots:
         void configureDeferred();
