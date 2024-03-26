@@ -14,8 +14,17 @@
 // bad peer filter
 bool is_bad_peer(const lt::peer_info& info)
 {
-  std::regex id_filter("-(XL|SD|XF|QD|BN|DL|TS)(\\d+)-");
+  std::regex id_filter("-(XL|SD|XF|QD|BN|DL|TS|DT)(\\d+)-");
   std::regex ua_filter(R"((\d+.\d+.\d+.\d+|cacao_torrent))");
+  std::regex consume_filter(R"((dt/torrent|Taipei-torrent))");
+
+  // TODO: trafficConsume by thank243(senis) but it's hard to determine GT0003 is legitimate client or not...
+  // Anyway, block dt/torrent and Taipei-torrent with specific case first.
+  QString country = Net::GeoIPManager::instance()->lookup(QHostAddress(info.ip.data()));
+  if (country == QLatin1String("CN") && std::regex_match(info.client, consume_filter)) {
+      return true;
+  }
+
   return std::regex_match(info.pid.data(), info.pid.data() + 8, id_filter) || std::regex_match(info.client, ua_filter);
 }
 
