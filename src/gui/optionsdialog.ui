@@ -2165,7 +2165,7 @@ readme[0-9].txt: filter 'readme1.txt', 'readme2.txt' but not 'readme10.txt'.</st
                  <item>
                   <widget class="QCheckBox" name="shadowBanEnabled">
                    <property name="text">
-                    <string>Enable Shadow Ban</string>
+                    <string>Enable Shadow Ban (requires restart)</string>
                    </property>
                   </widget>
                  </item>

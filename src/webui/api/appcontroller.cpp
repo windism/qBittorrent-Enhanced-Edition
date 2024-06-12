@@ -700,14 +700,14 @@ void AppController::setPreferencesAction()
         session->setTrackerFilteringEnabled(it.value().toBool());
     if (hasKey(u"banned_IPs"_s))
         session->setBannedIPs(it.value().toString().split(u'\n', Qt::SkipEmptyParts));
-    if (hasKey(u"shadow_ban_enabled"_s))
-        session->setShadowBan(it.value().toBool());
-    if (hasKey(u"shadow_banned_IPs"_s))
-        session->setShadowBannedIPs(it.value().toString().split(u'\n', Qt::SkipEmptyParts));
     if (hasKey(u"auto_ban_unknown_peer"_s))
         session->setAutoBanUnknownPeer(it.value().toBool());
     if (hasKey(u"auto_ban_bt_player_peer"_s))
         session->setAutoBanBTPlayerPeer(it.value().toBool());
+    if (hasKey(u"shadow_ban"_s))
+        session->setShadowBan(it.value().toBool());
+    if (hasKey(u"shadow_banned_IPs"_s))
+        session->setShadowBannedIPs(it.value().toString().split(u'\n', Qt::SkipEmptyParts));
 
     // Speed
     // Global Rate Limits
