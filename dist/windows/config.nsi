@@ -25,7 +25,7 @@
 ; 4.5.1.3 -> good
 ; 4.5.1.3.2 -> bad
 ; 4.5.0beta -> bad
-!define /ifndef QBT_VERSION "4.5.2.10"
+!define /ifndef QBT_VERSION "4.5.2"
 
 ; Option that controls the installer's window name
 ; If set, its value will be used like this:
@@ -104,7 +104,7 @@ XPStyle on
 !define MUI_FINISHPAGE_RUN_TEXT $(launch_qbt)
 
 ; The name of the installer
-Name "qBittorrent Enhanced ${QBT_INSTALLER_WINDOWNAME}"
+Name "qBittorrent ${QBT_INSTALLER_WINDOWNAME}"
 
 ; The file to write
 OutFile "qbittorrent_enhanced_${QBT_INSTALLER_FILENAME}_setup.exe"

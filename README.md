@@ -1,4 +1,4 @@
-qBittorrent Enhanced Edition
+qBittorrent Edition
 ------------------------------------------
 [Important Note for user and tracker operators](NOTE.md)
 ********************************

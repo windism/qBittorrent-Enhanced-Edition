@@ -4,7 +4,7 @@ Important Note
 
 Please do not use this modified BitTorrent client on Private Trackers,
 
-unless qBittorrent Enhanced Edition is allowed on the Private Tracker(_Depend on which PT you're using._).
+unless qBittorrent Edition is allowed on the Private Tracker(_Depend on which PT you're using._).
 
 Otherwise, you will get banned.
 
@@ -12,13 +12,13 @@ You should ask a tracker operator to whitelist this client rather than asking a 
 
 ### To tracker operators:
 
-qBittorrent Enhanced is based on qBittorrent, it's aimed at blocking leeching clients automatically.
+qBittorrent is based on qBittorrent, it's aimed at blocking leeching clients automatically.
 
 These modifications won't take effect on private torrents.
 
-Also, qBittorrent Enhanced has a different ID announce to trackers.
+Also, qBittorrent has a different ID announce to trackers.
 
-User agent: `qBittorrent Enhanced/LATEST_RELEASE_VERSION`, example: `qBittorrent Enhanced/4.3.0.10`
+User agent: `qBittorrent/LATEST_RELEASE_VERSION`, example: `qBittorrent/4.3.0.10`
 
 PeerID: `-qB430[A-Z]-`, example: `-qB430A-`
 ********************************
@@ -28,7 +28,7 @@ If you're an advanced(or private tracker) user and you want to open 2 qBittorren
 
 Instance 1 for Public torrent, Instance 2 for Private torrent or something else.
 
-You can open Official qBittorrent or qBittorrent Enhanced first, as you like.
+You can open Official qBittorrent or qBittorrent first, as you like.
 
 `Method 1:` Portable mode (Most suitable for Windows user)
 
